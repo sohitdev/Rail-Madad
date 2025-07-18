@@ -76,6 +76,8 @@ app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`)
 
 
 
+
+
 // Fetch all complaints for admin panel
 app.get('/admin/complaints', (req, res) => {
   const sql = `SELECT * FROM complaints ORDER BY created_at DESC`;
@@ -108,3 +110,45 @@ app.post('/submit-feedback', (req, res) => {
     res.json({ success: true, message: '✅ Feedback submitted successfully!' });
   });
 });
+
+
+
+
+// Get summary stats for admin dashboard
+app.get('/admin/summary', (req, res) => {
+  const sql = `
+  SELECT 
+    COUNT(*) AS total,
+    COUNT(CASE WHEN status = 'Resolved' THEN 1 END) AS resolved,
+    COUNT(CASE WHEN status != 'Resolved' THEN 1 END) AS pending
+  FROM complaints
+`;
+
+
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error("❌ Error fetching summary:", err);
+      return res.status(500).json({ success: false, message: "Database error" });
+    }
+
+    res.json({ success: true, ...results[0] });
+  });
+});
+
+
+// Update complaint status and remark
+app.put('/admin/complaint/:id', (req, res) => {
+  const id = req.params.id;
+  const { status, remark } = req.body;
+
+  const sql = `UPDATE complaints SET status = ?, remark = ? WHERE id = ?`;
+
+  db.query(sql, [status, remark, id], (err, result) => {
+    if (err) {
+      console.error("❌ Error updating complaint:", err);
+      return res.status(500).json({ success: false });
+    }
+    res.json({ success: true, message: "✅ Complaint updated successfully" });
+  });
+});
+

@@ -40,12 +40,6 @@ let generatedOTP = "";
 document.querySelector(".resend").addEventListener("click", function (e) {
   e.preventDefault();
 
-  const mobile = document.getElementById("mobile").value.trim();
-  if (!/^\d{10}$/.test(mobile)) {
-    alert("Please enter a valid 10-digit mobile number.");
-    return;
-  }
-
   generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
   alert("🔁 New OTP is: " + generatedOTP); // Again, for testing only
 });

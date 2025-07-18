@@ -12,11 +12,11 @@
   <div class="flex">
     
     <!-- Sidebar -->
-    <aside class="w-64 bg-blue-900 text-white h-screen p-6">
-      <h1 class="text-2xl font-bold mb-8">🚉 Rail Madad Admin</h1>
+    <aside class="w-64 bg-blue-900 text-white h-100% p-6">
+      <h1 class="text-2x1 font-bold mb-12 text-center">🚉 Rail Madad Admin</h1>
       <nav class="space-y-4">
-        <a href="#dashboard" class="block hover:text-yellow-300">Dashboard</a>
-        <a href="#complaints" class="block hover:text-yellow-300">Complaints</a>
+        <a href="#dashboard" class="block hover:text-yellow-300 text-center">Dashboard</a>
+        <a href="#complaints" class="block hover:text-yellow-300 text-center">Complaints</a>
       </nav>
     </aside>
 
@@ -24,23 +24,26 @@
     <main class="flex-1 p-8 overflow-y-auto">
       
       <!-- Dashboard Summary -->
-      <section id="dashboard" class="mb-10">
-        <h2 class="text-2xl font-semibold mb-4">📊 Overview</h2>
-        <div class="grid grid-cols-3 gap-6">
-          <div class="bg-white p-4 rounded shadow text-center">
-            <h3 class="text-gray-600">Total Complaints</h3>
-            <p class="text-2xl font-bold text-blue-700">128</p>
-          </div>
-          <div class="bg-white p-4 rounded shadow text-center">
-            <h3 class="text-gray-600">Resolved</h3>
-            <p class="text-2xl font-bold text-green-600">89</p>
-          </div>
-          <div class="bg-white p-4 rounded shadow text-center">
-            <h3 class="text-gray-600">Pending</h3>
-            <p class="text-2xl font-bold text-red-500">39</p>
-          </div>
-        </div>
-      </section> 
+      <!-- Dashboard Summary -->
+<section id="dashboard" class="mb-10">
+  <h2 class="text-2xl font-semibold mb-4">📊 Overview</h2>
+  <div class="grid grid-cols-3 gap-6">
+    <div class="bg-white p-4 rounded shadow text-center">
+      <h3 class="text-gray-600">Total Complaints</h3>
+      <p id="total-count" class="text-2xl font-bold text-blue-700">0</p>
+    </div>
+    <div class="bg-white p-4 rounded shadow text-center">
+      <h3 class="text-gray-600">Resolved</h3>
+      <p id="resolved-count" class="text-2xl font-bold text-green-600">0</p>
+    </div>
+    <div class="bg-white p-4 rounded shadow text-center">
+      <h3 class="text-gray-600">Pending</h3>
+      <p id="pending-count" class="text-2xl font-bold text-red-500">0</p>
+    </div>
+  </div>
+</section>
+
+
 
       <!-- Complaints Section -->
       <section id="complaints">
@@ -51,9 +54,25 @@
           <label for="department" class="font-medium">Filter by Department:</label>
           <select id="department" class="p-2 border border-gray-300 rounded">
             <option value="">All</option>
-            <option value="Sanitation">Sanitation</option>
+            <option value="Cleanliness and Hygiene Department">Cleanliness and Hygiene Department</option>
+            <option value="Catering and On-Board Services">Catering and On-Board Services</option>
             <option value="Security">Security</option>
-            <option value="Catering">Catering</option>
+            <option value="Ticketing and Reservations">Ticketing and Reservations</option>
+            <option value="Punctuality and Train Reservations">Punctuality and Train Reservations</option>
+            <option value="Customer Services and Grievances">Customer Services and Grievances</option>
+            <option value="Staff Behaviour">Staff Behaviour</option>
+            <option value="Luggage and Parcels">Luggage and Parcels</option>
+            <option value="Station Facilities">Station Facilities</option>
+            <option value="Medical and Emergency">Medical and Emergency</option>
+            <option value="Technical Support">Technical Support</option>
+            <option value="Environmental and Safety Compliance">Environmental and Safety Compliance</option>
+          </select>
+          <label for="status" class="font-medium">Status:</label>
+          <select id="department" class="p-2 border border-gray-300 rounded">
+          <option value="">ALL</option>
+          <option value="Pending">Pending</option>
+          <option value="In-Progress">In-Progess</option>
+          <option value="Resolved">Resolved</option>
           </select>
           <button class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Apply</button>
         </div>
@@ -99,39 +118,39 @@
       }
 
       const card = `
-        <div class="bg-white shadow rounded p-6">
-          <div class="flex justify-between items-center mb-3">
-            <div>
-              <h3 class="font-bold text-lg">Complaint #${c.id}</h3>
-              <p class="text-sm text-gray-600">Filed: ${new Date(c.created_at).toLocaleString()}</p>
-            </div>
-            <span class="px-3 py-1 text-sm rounded-full bg-yellow-100 text-yellow-800">Pending</span>
-          </div>
+  <div class="bg-white shadow rounded p-6" id="complaint-${c.id}">
+    <div class="flex justify-between items-center mb-3">
+      <div>
+       
+        <h3 class="font-bold text-lg">Complaint #${c.id}</h3>
+        <p class="text-sm text-gray-600">Filed: ${new Date(c.created_at).toLocaleString()}</p>
+      </div>
+      <span class="px-3 py-1 text-sm rounded-full bg-yellow-100 text-yellow-800">${c.status}</span>
+    </div>
 
-          <p><strong>Mobile:</strong> ${c.mobile_number}</p>
-          <p><strong>PNR:</strong> ${c.pnr_number || 'N/A'}</p>
-          <p><strong>Station:</strong> ${c.recent_station || 'N/A'}</p>
-          <p class="my-2 text-gray-800"><strong>Description:</strong> ${c.description}</p>
+    <p><strong>Mobile:</strong> ${c.mobile_number}</p>
+    <p><strong>PNR:</strong> ${c.pnr_number || 'N/A'}</p>
+    <p><strong>Station:</strong> ${c.recent_station || 'N/A'}</p>
+    <p class="my-2 text-gray-800"><strong>Description:</strong> ${c.description}</p>
+    <div class="mt-3 space-y-2">${fileDisplay}</div>
 
-          <div class="mt-3 space-y-2">${fileDisplay}</div>
+    <div class="mt-4 flex items-center space-x-4">
+      <label class="font-medium">Update Status:</label>
+      <select class="p-2 border rounded" id="status-${c.id}">
+        <option ${c.status === 'Pending' ? 'selected' : ''}>Pending</option>
+        <option ${c.status === 'In Progress' ? 'selected' : ''}>In Progress</option>
+        <option ${c.status === 'Resolved' ? 'selected' : ''}>Resolved</option>
+      </select>
+    </div>
 
-          <div class="mt-4 flex items-center space-x-4">
-            <label class="font-medium">Update Status:</label>
-            <select class="p-2 border rounded">
-              <option>Pending</option>
-              <option>In Progress</option>
-              <option>Resolved</option>
-            </select>
-            <button class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">Save</button>
-          </div>
+    <div class="mt-3">
+      <label class="block font-medium mb-1">Admin Remark:</label>
+      <textarea class="w-full p-2 border rounded" placeholder="Enter your remark..." id="remark-${c.id}">${c.remark || ''}</textarea>
+      <button class="mt-2 px-4 py-1 bg-green-600 text-white rounded hover:bg-green-700" onclick="saveUpdate(${c.id})">Save</button>
+    </div>
+  </div>
+`;
 
-          <div class="mt-3">
-            <label class="block font-medium mb-1">Admin Remark:</label>
-            <textarea class="w-full p-2 border rounded" placeholder="Enter your remark..."></textarea>
-            <button class="mt-2 px-4 py-1 bg-gray-700 text-white rounded hover:bg-gray-800">Add Remark</button>
-          </div>
-        </div>
-      `;
 
       container.insertAdjacentHTML('beforeend', card);
     });
@@ -143,26 +162,55 @@
   }
 }
 
+async function loadDashboardCounts() {
+  try {
+    const res = await fetch('http://localhost:3000/admin/summary');
+    const data = await res.json();
+
+    if (data.success) {
+      document.getElementById('total-count').textContent = data.total || 0;
+      document.getElementById('resolved-count').textContent = data.resolved || 0;
+      document.getElementById('pending-count').textContent = data.pending || 0;
+    }
+  } catch (err) {
+    console.error("❌ Error loading dashboard counts:", err);
+  }
+}
+
+async function saveUpdate(id) {
+  const status = document.getElementById(`status-${id}`).value;
+  const remark = document.getElementById(`remark-${id}`).value;
+
+  const res = await fetch(`http://localhost:3000/admin/complaint/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ status, remark })
+  });
+
+  const result = await res.json();
+
+  if (result.success) {
+    alert(`✅ Complaint #${id} updated`);
+    loadComplaints();         // refresh complaint list
+    loadDashboardCounts();    // refresh stats
+  } else {
+    alert(`❌ Failed to update complaint`);
+  }
+}
+
 // Call function on page load
 window.addEventListener('DOMContentLoaded', loadComplaints);
 
-//to be checked not final code
-let fileHtml = '';
 
-if (c.file_path) {
-  const fileUrl = `http://localhost:3000/uploads/${c.file_path}`;
-  const ext = c.file_path.split('.').pop().toLowerCase();
 
-  if (['jpg', 'jpeg', 'png', 'gif'].includes(ext)) {
-    fileHtml = `<img src="${fileUrl}" alt="Image" class="w-40 rounded border mt-2" />`;
-  } else if (['mp4', 'webm'].includes(ext)) {
-    fileHtml = `<video controls class="w-40 mt-2"><source src="${fileUrl}" type="video/${ext}" /></video>`;
-  } else if (['mp3', 'wav'].includes(ext)) {
-    fileHtml = `<audio controls class="w-40 mt-2"><source src="${fileUrl}" type="audio/${ext}" /></audio>`;
-  } else {
-    fileHtml = `<a href="${fileUrl}" target="_blank" class="text-blue-600 underline">Download File</a>`;
-  }
-}
+document.addEventListener('DOMContentLoaded', () => {
+  loadComplaints();
+  loadDashboardCounts();
+});
+
+
 
 </script>
 </body>
