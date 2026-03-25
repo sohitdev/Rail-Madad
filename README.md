@@ -7,7 +7,7 @@ RailMadad is a comprehensive platform designed to streamline the process of fili
 - **File a Complaint:** Easy-to-use interface for users to submit complaints with attachments (images/videos).
 - **Track Complaint:** Users can track the status of their complaints in real-time.
 - **Admin Portal:** Admins can view, manage, and resolve complaints efficiently.
-- **Anubhav Section:** Share and view experiences related to railway services.
+- **Feedback Section:** Share and view experiences related to railway services.
 - **Secure File Uploads:** Supports image and video uploads for better context.
 
 ## Folder Structure
@@ -18,12 +18,12 @@ Railmadad/
 │   └── server.js              # Main backend server file
 │   └── uploads/               # Uploaded images and videos
 ├── railmadad-frontend/        # Frontend (HTML/CSS/JS)
-│   ├── Landing-Page/          # Home page
+│   ├── home/          # Home page
 │   ├── file-a-complaint/      # Complaint filing UI
 │   ├── Track-a-complaint/     # Complaint tracking UI
 │   ├── admin-login/           # Admin login UI
 │   ├── Admin-Portal/          # Admin dashboard
-│   ├── anubhav/               # Experience sharing UI
+│   ├── feedback/              # Experience sharing UI
 │   └── img/                   # Static images
 ├── package.json               # Project dependencies
 ├── package-lock.json          # Dependency lock file
@@ -82,10 +82,10 @@ npx http-server railmadad-frontend/
 
 ## Usage
 
-- **File a Complaint:** Go to `file-a-complaint/file.html` and submit your complaint.
-- **Track Complaint:** Use `Track-a-complaint/track.html` to check complaint status.
-- **Admin Login:** Access `admin-login/login.html` for admin features.
-- **Share Experience:** Visit `anubhav/anubhav.html` to share or read experiences.
+- **File a Complaint:** Go to `file-a-complaint/` and submit your complaint.
+- **Track Complaint:** Use `Track-a-complaint/` to check complaint status.
+- **Admin Login:** Access `admin-login/` for admin features.
+- **Share Experience:** Visit `feedback/` to share or read experiences.
 
 ## Contributing
 

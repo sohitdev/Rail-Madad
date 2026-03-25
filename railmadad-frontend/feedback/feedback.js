@@ -1,14 +1,17 @@
 const API_BASE = 'http://localhost:3000';
 
-const form = document.getElementById('complaintForm');
-const mobileInput = document.getElementById('mobile_number');
+const form = document.getElementById('feedbackForm');
+const mobileInput = document.getElementById('mobile');
 const otpInput = document.getElementById('otp');
-const pnrInput = document.getElementById('pnr_number');
-const descriptionInput = document.getElementById('description');
-const getOtpBtn = document.getElementById('getOtpBtn');
-const verifyOtpBtn = document.getElementById('verifyOtpBtn');
-const resendOtpBtn = document.getElementById('resendOtpBtn');
+const pnrInput = document.getElementById('pnr');
+const feedbackInput = document.getElementById('feedback-text');
 
+const getOtpBtn = document.getElementById('feedbackGetOtpBtn');
+const verifyOtpBtn = document.getElementById('feedbackVerifyOtpBtn');
+const resendOtpBtn = document.getElementById('feedbackResendOtpBtn');
+
+const stars = document.querySelectorAll('.star-rating .star');
+let selectedRating = 0;
 let generatedOTP = '';
 let otpVerified = false;
 
@@ -24,6 +27,24 @@ function isValidPnr(value) {
   return !value || /^\d{10}$/.test(String(value || '').trim());
 }
 
+function highlight(index) {
+  stars.forEach((star, i) => {
+    star.classList.toggle('hovered', i <= index);
+  });
+}
+
+stars.forEach((star, index) => {
+  star.addEventListener('mouseover', () => highlight(index));
+  star.addEventListener('mouseout', () => highlight(selectedRating - 1));
+  star.addEventListener('click', () => {
+    selectedRating = index + 1;
+    highlight(index);
+    stars.forEach((s, i) => {
+      s.setAttribute('aria-checked', String(i === index));
+    });
+  });
+});
+
 function resetOtpVerification() {
   otpVerified = false;
 }
@@ -34,8 +55,7 @@ otpInput.addEventListener('input', resetOtpVerification);
 getOtpBtn.addEventListener('click', (e) => {
   e.preventDefault();
 
-  const mobile = mobileInput.value.trim();
-  if (!isValidMobile(mobile)) {
+  if (!isValidMobile(mobileInput.value)) {
     alert('Please enter a valid 10-digit mobile number.');
     return;
   }
@@ -48,14 +68,12 @@ getOtpBtn.addEventListener('click', (e) => {
 verifyOtpBtn.addEventListener('click', (e) => {
   e.preventDefault();
 
-  const enteredOTP = otpInput.value.trim();
-
   if (!generatedOTP) {
     alert('Please generate OTP first.');
     return;
   }
 
-  if (enteredOTP === generatedOTP) {
+  if (otpInput.value.trim() === generatedOTP) {
     otpVerified = true;
     alert('OTP verified successfully.');
   } else {
@@ -67,8 +85,7 @@ verifyOtpBtn.addEventListener('click', (e) => {
 resendOtpBtn.addEventListener('click', (e) => {
   e.preventDefault();
 
-  const mobile = mobileInput.value.trim();
-  if (!isValidMobile(mobile)) {
+  if (!isValidMobile(mobileInput.value)) {
     alert('Please enter a valid 10-digit mobile number first.');
     return;
   }
@@ -84,7 +101,7 @@ form.addEventListener('submit', async (e) => {
   const mobile = mobileInput.value.trim();
   const otp = otpInput.value.trim();
   const pnr = pnrInput.value.trim();
-  const description = descriptionInput.value.trim();
+  const feedbackText = feedbackInput.value.trim();
 
   if (!isValidMobile(mobile)) {
     alert('Mobile number must be 10 digits.');
@@ -101,43 +118,49 @@ form.addEventListener('submit', async (e) => {
     return;
   }
 
-  if (description.length < 10) {
-    alert('Description should be at least 10 characters.');
+  if (!feedbackText) {
+    alert('Please enter feedback text.');
+    return;
+  }
+
+  if (!selectedRating) {
+    alert('Please select a star rating before submitting.');
     return;
   }
 
   if (!otpVerified) {
-    alert('Please verify OTP before submitting.');
+    alert('Please verify OTP before submitting feedback.');
     return;
   }
 
-  const formData = new FormData(form);
-
   try {
-    const res = await fetch(`${API_BASE}/submit-complaint`, {
+    const res = await fetch(`${API_BASE}/submit-feedback`, {
       method: 'POST',
-      body: formData
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ mobile, otp, pnr, rating: selectedRating, feedbackText })
     });
 
     const result = await res.json();
-
     if (!res.ok || !result.success) {
-      alert(result.message || 'Failed to submit complaint.');
+      alert(result.message || 'Failed to submit feedback.');
       return;
     }
 
-    const department = result.classification?.department || 'General';
-    alert(`${result.message}\nAssigned department: ${department}`);
+    alert(result.message || 'Feedback submitted!');
     form.reset();
+    highlight(-1);
+    selectedRating = 0;
     generatedOTP = '';
     otpVerified = false;
   } catch (error) {
-    console.error('Complaint submit error:', error);
-    alert('Something went wrong while submitting complaint.');
+    console.error('Feedback submit error:', error);
+    alert('Something went wrong. Please try again later.');
   }
 });
 
 form.addEventListener('reset', () => {
+  highlight(-1);
+  selectedRating = 0;
   generatedOTP = '';
   otpVerified = false;
 });
