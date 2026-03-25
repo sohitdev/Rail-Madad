@@ -27,6 +27,7 @@ Railmadad/
 │   └── img/                   # Static images
 ├── package.json               # Project dependencies
 ├── package-lock.json          # Dependency lock file
+├── .env.example               # Sample environment variables
 └── README.md                  # Project documentation
 ```
 
@@ -34,7 +35,7 @@ Railmadad/
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) (v14 or above recommended)
+- [Node.js](https://nodejs.org/) (v18 or above recommended)
 - npm (comes with Node.js)
 
 ### Installation
@@ -48,6 +49,22 @@ Railmadad/
    ```sh
    npm install
    ```
+3. **Set up environment variables:**
+   ```sh
+   cp .env.example .env
+   ```
+   Update `.env` with your local database credentials and API key.
+
+## Environment Variables
+
+This project reads configuration from `.env` (loaded automatically by the backend).
+
+- `PORT` - Backend port (default: `3000`)
+- `DB_HOST` - MySQL host
+- `DB_USER` - MySQL username
+- `DB_PASSWORD` - MySQL password
+- `DB_NAME` - MySQL database name
+- `GEMINI_API_KEY` - Gemini API key for AI complaint classification (optional)
 
 ### Running the Project
 
