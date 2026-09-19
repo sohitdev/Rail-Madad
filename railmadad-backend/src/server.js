@@ -35,6 +35,10 @@ app.get('/health', (_req, res) => {
   res.json({ success: true, service: 'railmadad-backend' });
 });
 
+app.get('/', (_req, res) => {
+  res.send('RailMadad API is running!');
+});
+
 async function startServer() {
   db.connect(async (err) => {
     if (err) {
