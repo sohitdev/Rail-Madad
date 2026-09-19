@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  # 1. MySQL Database Service
+  mysql:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: railmadad
+      MYSQL_USER: railadmin
+      MYSQL_PASSWORD: railpassword
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  # 2. Node.js Express Backend Service
+  backend:
+    build: 
+      context: ./railmadad-backend
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - DB_HOST=mysql
+      - DB_USER=railadmin
+      - DB_PASSWORD=railpassword
+      - DB_NAME=railmadad
+      - PORT=3000
+      - ADMIN_USERNAME=admin
+      - ADMIN_PASSWORD=password123
+      # Optionally uncomment and fill these for Nodemailer emails:
+      # - SMTP_USER=your-email@gmail.com
+      # - SMTP_PASS=your-app-password
+    depends_on:
+      - mysql
+
+  # 3. React Vite Frontend Service (Nginx)
+  frontend:
+    build:
+      context: ./railmadad-frontend
+      dockerfile: Dockerfile
+      args:
+        # Note: This URL must be accessible from the USER's browser.
+        # Since backend is exposed on host port 3000, localhost:3000 is correct for local development.
+        - VITE_API_URL=http://localhost:3000
+    restart: always
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+
+volumes:
+  mysql_data:

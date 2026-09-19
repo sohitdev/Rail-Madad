@@ -30,3 +30,5 @@ build/
 
 # Misc
 *.swp 
+
+.agents

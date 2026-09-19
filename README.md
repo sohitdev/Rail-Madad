@@ -1,109 +1,137 @@
-# RailMadad
+<div align="center">
+  <img src="./railmadad-frontend/public/vite.svg" alt="RailMadad Logo" width="80" />
+  <h1>RailMadad (AI-Powered)</h1>
+  <p>A Full-Stack, Real-Time Railway Grievance Management Infrastructure.</p>
+</div>
 
-RailMadad is a comprehensive platform designed to streamline the process of filing, tracking, and managing complaints related to railway services. It features an intuitive frontend for users and a robust backend for administrators, ensuring efficient complaint resolution and enhanced user experience.
+<p align="center">
+  <a href="#features">Features</a> •
+  <a href="#tech-stack">Tech Stack</a> •
+  <a href="#architecture">Architecture</a> •
+  <a href="#installation">Installation</a> •
+  <a href="#environment-variables">Environment Variables</a>
+</p>
 
-## Features
+---
 
-- **File a Complaint:** Easy-to-use interface for users to submit complaints with attachments (images/videos).
-- **Track Complaint:** Users can track the status of their complaints in real-time.
-- **Admin Portal:** Admins can view, manage, and resolve complaints efficiently.
-- **Feedback Section:** Share and view experiences related to railway services.
-- **Secure File Uploads:** Supports image and video uploads for better context.
+## 🚀 Overview
 
-## Folder Structure
+**RailMadad** is an enterprise-grade, full-stack clone of a public grievance portal. It completely modernizes the complaint pipeline by integrating **Google Gemini AI** as a silent backend routing engine, utilizing **Socket.io WebSockets** for real-time admin updates, and enforcing strict identity verification via a **custom Nodemailer SMTP pipeline**. 
 
+Designed strictly with premium UI/UX standards, this project serves as a comprehensive demonstration of real-time architecture, AI integration, relational database management, and Dockerized deployments.
+
+## ✨ Key Features
+
+### 🚄 For the Public (Passengers)
+- **AI-Powered Auto-Routing:** Passengers describe their issue in plain text. A backend Google Gemini AI model processes the text to determine the exact railway department (out of 13) and assigns a priority level (`High`, `Medium`, `Low`) based on urgency (e.g., Medical/Fire = High).
+- **True OTP Verification:** Complaints cannot be submitted blindly. The backend actively generates and sends a secure 6-digit OTP to the user's provided email address using Gmail SMTP.
+- **Multipart Evidence Uploads:** Secure backend file handling (via `multer`) allows users to attach image evidence to their ticket.
+- **Real-Time Tracking:** Passengers can look up their PNR/Mobile Number to view live ticket statuses, priority levels, and official remarks left by admins.
+- **Automated Email Alerts:** The system actively emails passengers the exact moment an admin updates their ticket status.
+
+### 🛡️ For the Administrators (Railway Staff)
+- **Real-Time Command Center:** Powered by `Socket.io`. When a passenger submits a complaint anywhere, it instantly flashes onto the Admin Dashboard live—no page refreshes required.
+- **JWT-Secured Gateway:** The `/admin` portal is locked behind secure JSON Web Token authentication.
+- **Triage & Action System:** Admins can instantly identify high-priority tickets (highlighted in red), view AI reasoning confidence, inspect photo attachments, modify ticket statuses (Pending ➔ In Progress ➔ Resolved), and write internal remarks.
+
+## 💻 Tech Stack
+
+- **Frontend:** React 18, Vite, React Router v6, Tailwind CSS v4, Phosphor Icons.
+- **Backend:** Node.js, Express.js.
+- **Database:** MySQL (Relational Schema), `mysql2` connection pooling.
+- **Real-Time & AI:** Socket.io (WebSockets), Google Gemini API (`@google/genai`).
+- **Security & Mail:** `jsonwebtoken` (JWT), `nodemailer` (SMTP OTPs), `multer` (File Uploads).
+- **DevOps:** Fully Dockerized (`Dockerfile`, `docker-compose.yml`).
+
+## 🏗️ Architecture
+
+```mermaid
+graph TD
+    Client[Passenger React App] -->|Submits Complaint + Image| Express[Node.js Backend]
+    Express -->|Generates OTP| SMTP[Gmail SMTP Server]
+    SMTP -->|Emails Code| PassengerInbox[Passenger's Email]
+    Express -->|Sends Text for Classification| Gemini[Google Gemini AI]
+    Gemini -->|Returns Department & Priority| Express
+    Express -->|Writes Ticket Data| MySQL[(MySQL Database)]
+    Express -->|Emits WebSocket Event| Admin[Admin React App]
 ```
-Railmadad/
-├── railmadad-backend/         # Backend server (Node.js/Express)
-│   └── server.js              # Main backend server file
-│   └── uploads/               # Uploaded images and videos
-├── railmadad-frontend/        # Frontend (HTML/CSS/JS)
-│   ├── home/          # Home page
-│   ├── file-a-complaint/      # Complaint filing UI
-│   ├── Track-a-complaint/     # Complaint tracking UI
-│   ├── admin-login/           # Admin login UI
-│   ├── Admin-Portal/          # Admin dashboard
-│   ├── feedback/              # Experience sharing UI
-│   └── img/                   # Static images
-├── package.json               # Project dependencies
-├── package-lock.json          # Dependency lock file
-├── .env.example               # Sample environment variables
-└── README.md                  # Project documentation
-```
 
-## Getting Started
+## 🛠️ Installation & Setup
 
-### Prerequisites
+### Option 1: Docker (Recommended)
+The fastest way to spin up the entire stack locally, including an automated MySQL server.
 
-- [Node.js](https://nodejs.org/) (v18 or above recommended)
-- npm (comes with Node.js)
-
-### Installation
-
-1. **Clone the repository:**
-   ```sh
+1. Clone the repository:
+   ```bash
    git clone https://github.com/learner-sohit/Rail-Madad.git
-   cd Railmadad
+   cd Rail-Madad
    ```
-2. **Install dependencies:**
-   ```sh
-   npm install
-   ```
-3. **Set up environment variables:**
-   ```sh
+2. Set up your Environment Variables:
+   ```bash
    cp .env.example .env
    ```
-   Update `.env` with your local database credentials and API key.
+   *(Fill out the `.env` file with your Gemini API key and Gmail App Password).*
+3. Run Docker Compose:
+   ```bash
+   docker compose up --build
+   ```
+4. Access the app:
+   - Frontend: `http://localhost:8080`
+   - Backend API: `http://localhost:3000`
 
-## Environment Variables
+### Option 2: Native Local Setup
+If you want to run it without Docker (requires MySQL installed locally or a cloud database like Aiven/TiDB).
 
-This project reads configuration from `.env` (loaded automatically by the backend).
+1. **Install Dependencies:**
+   ```bash
+   cd railmadad-backend && npm install
+   cd ../railmadad-frontend && npm install
+   ```
+2. **Start Backend (from `railmadad-backend` folder):**
+   ```bash
+   npm start
+   ```
+   *(The backend automatically connects to your database and generates the tables via `ensureSchema`).*
+3. **Start Frontend (from `railmadad-frontend` folder):**
+   ```bash
+   npm run dev
+   ```
 
-- `PORT` - Backend port (default: `3000`)
-- `DB_HOST` - MySQL host
-- `DB_USER` - MySQL username
-- `DB_PASSWORD` - MySQL password
-- `DB_NAME` - MySQL database name
-- `GEMINI_API_KEY` - Gemini API key for AI complaint classification (optional)
+## 🔐 Environment Variables
 
-### Running the Project
+You must create a `.env` file in the root directory. Use `.env.example` as a template.
 
-#### Backend
+| Variable | Description |
+|---|---|
+| `PORT` | Backend port (default: 3000) |
+| `DB_HOST` | MySQL database host (e.g. localhost or Aiven URL) |
+| `DB_PORT` | MySQL database port (e.g. 3306 or 10249) |
+| `DB_USER` | MySQL database username |
+| `DB_PASSWORD` | MySQL database password |
+| `DB_NAME` | MySQL database name (default: defaultdb) |
+| `DB_SSL` | Set to `true` if using a cloud DB like Aiven |
+| `GEMINI_API_KEY` | Google AI Studio Key for classification |
+| `ADMIN_USERNAME` | Custom username for the admin dashboard |
+| `ADMIN_PASSWORD` | Custom password for the admin dashboard |
+| `JWT_SECRET` | A secure random string for signing admin tokens |
+| `SMTP_USER` | Your Gmail address (for sending OTPs) |
+| `SMTP_PASS` | Your 16-character Google App Password (NO SPACES) |
 
-Start the backend server:
-
-```sh
-node railmadad-backend/server.js
+## 📁 Repository Structure
+```
+Rail-Madad/
+├── railmadad-frontend/         # React/Vite SPA
+│   ├── src/pages/              # Page Routes (Home, Admin, File Complaint)
+│   ├── src/features/           # Component modules
+│   └── src/lib/api.js          # Axios client with JWT interceptor
+├── railmadad-backend/          # Node/Express API
+│   ├── src/controllers/        # Route Logic (Admin, Complaints)
+│   ├── src/middlewares/        # Multer & JWT Auth Guards
+│   ├── src/utils/              # Gemini AI & Nodemailer setup
+│   └── src/server.js           # API Entrypoint
+├── docker-compose.yml          # Container orchestration
+└── .env                        # Root configuration
 ```
 
-Or, for auto-reload on changes (requires nodemon):
-
-```sh
-npm install -g nodemon
-nodemon railmadad-backend/server.js
-```
-
-#### Frontend
-
-Open any HTML file in `railmadad-frontend/` directly in your browser, or serve the folder using a static server:
-
-```sh
-npx live-server railmadad-frontend/
-```
-
-Or
-
-```sh
-npx http-server railmadad-frontend/
-```
-
-## Usage
-
-- **File a Complaint:** Go to `file-a-complaint/` and submit your complaint.
-- **Track Complaint:** Use `Track-a-complaint/` to check complaint status.
-- **Admin Login:** Access `admin-login/` for admin features.
-- **Share Experience:** Visit `feedback/` to share or read experiences.
-
-## Contributing
-
-Contributions are welcome! Please fork the repository and submit a pull request.
+## 🤝 Contributing
+Contributions are welcome! Please fork the repository, make your changes, and submit a pull request.
