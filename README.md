@@ -1,24 +1,10 @@
-<div align="center">
-  <img src="./railmadad-frontend/public/vite.svg" alt="RailMadad Logo" width="80" />
-  <h1>RailMadad (AI-Powered)</h1>
-  <p>A Full-Stack, Real-Time Railway Grievance Management Infrastructure.</p>
-</div>
+# 🚄 RailMadad — AI-Powered Railway Grievance Management Infrastructure
 
-<p align="center">
-  <a href="#features">Features</a> •
-  <a href="#tech-stack">Tech Stack</a> •
-  <a href="#architecture">Architecture</a> •
-  <a href="#installation">Installation</a> •
-  <a href="#environment-variables">Environment Variables</a>
-</p>
+![Node.js](https://img.shields.io/badge/Node.js-v18%2B-5FA04E?style=flat-square&logo=node.js&logoColor=white) ![React](https://img.shields.io/badge/React-v18-087EA4?style=flat-square&logo=react&logoColor=white) ![Vite](https://img.shields.io/badge/Vite-v5-646CFF?style=flat-square&logo=vite&logoColor=white) ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white) ![Express](https://img.shields.io/badge/Express-v4-000000?style=flat-square&logo=express&logoColor=white) ![MySQL](https://img.shields.io/badge/MySQL-Cloud-4479A1?style=flat-square&logo=mysql&logoColor=white) ![Google Gemini](https://img.shields.io/badge/Google_Gemini-GenAI-8E75B2?style=flat-square&logo=google&logoColor=white) ![Socket.io](https://img.shields.io/badge/Socket.io-Real--Time-010101?style=flat-square&logo=socket.io&logoColor=white)
+
+**RailMadad** is an enterprise-grade, full-stack clone of a public grievance portal. It completely modernizes the complaint pipeline by integrating **Google Gemini AI** as a silent backend routing engine to auto-categorize issues by department and priority, utilizing **Socket.io WebSockets** for real-time admin updates, and enforcing strict identity verification via a **custom Nodemailer SMTP pipeline** — all wrapped in a clean, minimal anti-slop UI.
 
 ---
-
-## 🚀 Overview
-
-**RailMadad** is an enterprise-grade, full-stack clone of a public grievance portal. It completely modernizes the complaint pipeline by integrating **Google Gemini AI** as a silent backend routing engine, utilizing **Socket.io WebSockets** for real-time admin updates, and enforcing strict identity verification via a **custom Nodemailer SMTP pipeline**. 
-
-Designed strictly with premium UI/UX standards, this project serves as a comprehensive demonstration of real-time architecture, AI integration, relational database management, and Dockerized deployments.
 
 ## ✨ Key Features
 
