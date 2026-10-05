@@ -61,6 +61,36 @@ exports.getSummary = async (_req, res) => {
   }
 };
 
+exports.getAnalytics = async (_req, res) => {
+  try {
+    const byDepartment = await query(`
+      SELECT department, COUNT(*) as count 
+      FROM complaints 
+      GROUP BY department
+    `);
+
+    const byPriority = await query(`
+      SELECT priority, COUNT(*) as count 
+      FROM complaints 
+      GROUP BY priority
+    `);
+
+    // Trend over last 30 days
+    const byDate = await query(`
+      SELECT DATE(created_at) as date, COUNT(*) as count
+      FROM complaints
+      WHERE created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)
+      GROUP BY DATE(created_at)
+      ORDER BY date ASC
+    `);
+
+    res.json({ success: true, data: { byDepartment, byPriority, byDate } });
+  } catch (err) {
+    console.error('Error fetching analytics:', err);
+    res.status(500).json({ success: false, message: 'Database error' });
+  }
+};
+
 exports.updateComplaint = async (req, res) => {
   try {
     const id = Number(req.params.id);

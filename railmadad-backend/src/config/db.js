@@ -76,6 +76,9 @@ async function ensureSchema() {
   if (!existing.has('priority')) {
     await query("ALTER TABLE complaints ADD COLUMN priority VARCHAR(20) DEFAULT 'Medium'");
   }
+  if (!existing.has('translated_description')) {
+    await query("ALTER TABLE complaints ADD COLUMN translated_description TEXT NULL");
+  }
 }
 
 module.exports = { db, query, ensureSchema };

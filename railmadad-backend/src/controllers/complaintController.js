@@ -78,8 +78,8 @@ exports.submitComplaint = async (req, res) => {
 
     const sql = `
       INSERT INTO complaints
-      (mobile_number, email, otp, pnr_number, recent_station, incident_date, file_path, description, status, department, priority, classification_confidence, classification_reason, classification_method)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'Pending', ?, ?, ?, ?, ?)
+      (mobile_number, email, otp, pnr_number, recent_station, incident_date, file_path, description, status, department, priority, translated_description, classification_confidence, classification_reason, classification_method)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'Pending', ?, ?, ?, ?, ?, ?)
     `;
 
     const result = await query(sql, [
@@ -93,6 +93,7 @@ exports.submitComplaint = async (req, res) => {
       String(description).trim(),
       classification.department,
       classification.priority,
+      classification.translation || null,
       classification.confidence,
       classification.reason,
       classification.method

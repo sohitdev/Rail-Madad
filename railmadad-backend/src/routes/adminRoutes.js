@@ -6,6 +6,7 @@ const adminController = require('../controllers/adminController');
 router.post('/login', adminController.login);
 router.get('/complaints', authenticateAdmin, adminController.getComplaints);
 router.get('/summary', authenticateAdmin, adminController.getSummary);
+router.get('/analytics', authenticateAdmin, adminController.getAnalytics);
 router.put('/complaint/:id', authenticateAdmin, adminController.updateComplaint);
 router.get('/departments', adminController.getDepartments);
 

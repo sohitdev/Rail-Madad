@@ -56,11 +56,12 @@ async function classifyComplaint(description) {
     DEPARTMENTS.join(' | '),
     '',
     'Also determine the priority (High, Medium, Low) based on urgency. Medical, fire, or severe security issues are High.',
+    'If the complaint is not in English (e.g. Hindi, regional languages), provide an English translation.',
     '',
     `Complaint: ${description}`,
     '',
     'Return ONLY JSON in this shape:',
-    '{"department":"...","priority":"High|Medium|Low","confidence":0.0,"reason":"..."}'
+    '{"department":"...","priority":"High|Medium|Low","translation":"...","confidence":0.0,"reason":"..."}'
   ].join('\n');
 
   try {
@@ -100,6 +101,7 @@ async function classifyComplaint(description) {
       return {
         department,
         priority,
+        translation: parsed.translation || null,
         confidence: Number.isFinite(confidence) ? Math.max(0, Math.min(1, confidence)) : 0.7,
         reason: parsed.reason
           ? String(parsed.reason).slice(0, 255)
